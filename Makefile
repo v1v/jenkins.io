@@ -139,21 +139,29 @@ clean:
 # Ensure the securities are copied and also transformed based on the
 # rolling and fixed versions which are env variables
 files := $(wildcard content/security/advisory/*.adoc)
-prepare-cloudbees:
+prepare-advisory:
 	echo ${rolling} ${fixed}
-	mkdir -p content/cloudbees
+	mkdir -p content/advisory
 	for p in $(files); \
 	    do \
-	    cp -rf $$p content/cloudbees/ ;\
-			echo "rolling: ${rolling}" >> content/cloudbees/$$(basename $$p) ; \
-			echo "fixed: ${fixed}" >> content/cloudbees/$$(basename $$p) ; \
+	    cp -rf $$p content/advisory/ ;\
+			echo "rolling: ${rolling}" >> content/advisory/$$(basename $$p) ; \
+			echo "fixed: ${fixed}" >> content/advisory/$$(basename $$p) ; \
 	    done
 
-cloudbees: site
+# Remove security to be able to apply the new theme
+remove-security:
+	rm -rf content/security
+
+# Build the site and copy the transformed security advisories
+# to the target folder
+advisory: remove-security site
+	git checkout -- content/security
+	rm -rf $(BUILD_DIR)/target
 	mkdir -p $(BUILD_DIR)/target
 	(cd $(BUILD_DIR) && \
 		rm -rf target && \
-		find . -name cloudbees -exec cp -rf {} target/ \; )
+		find . -name advisory -exec cp -rf {} target/ \; )
 
 #######################################################
 

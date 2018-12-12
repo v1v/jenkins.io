@@ -39,3 +39,7 @@ content/doc/developer/extensions/*.adoc
 /_site
 /_tmp/
 /content/_site/
+
+
+# Security advisories created on the fly
+/content/advisory/

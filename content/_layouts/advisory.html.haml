@@ -25,6 +25,23 @@ notitle: true
   fixed_plugins = plugins.dup.keep_if { |p| p.fixed }
   unfixed_plugins = plugins.dup.keep_if { |p| !p.fixed }
 
+  if page.rolling&.empty?
+    rolling = ""
+    major_rolling = "2"
+  else
+    major_rolling = page.rolling.split(".")[0]
+    rolling = page.rolling
+  end
+
+  if page.fixed&.empty?
+    major_fixed = "2"
+    minor_fixed = "y"
+    fixed = ""
+  else
+    fixed=page.fixed
+    major_fixed = page.fixed.split(".")[0]
+    minor_fixed = page.fixed.split(".")[1]
+  end
 
 %h1
   = page.title.gsub('Jenkins', 'CloudBees')
@@ -73,27 +90,27 @@ notitle: true
     %li
       %strong
         CloudBees Traditional Platforms
-      should be upgraded #{page.rolling}
+      should be upgraded #{rolling}
     %li
       %strong
         CloudBees Cloud Platforms
-      should be upgraded #{page.rolling}
+      should be upgraded #{rolling}
     %li
       %strong
         CloudBees Jenkins Enterprise
-      should be upgraded the Managed Masters and Operations Center to #{page.rolling}
+      should be upgraded the Managed Masters and Operations Center to #{rolling}
     %li
       %strong
         CloudBees Jenkins Platform
-      (rolling train, CJP Operations Center and CJP Client Master #{page.rolling.split('.')[0]}.x.y.z) should be upgraded to version #{page.rolling}
+      (rolling train, CJP Operations Center and CJP Client Master (#{major_rolling}.x.y.z) should be upgraded to version #{rolling}
     %li
       %strong
         CloudBees Jenkins Platform
-      (fixed train, CJP Operations Center and CJP Client Master #{page.fixed.split('.')[0]}.#{page.fixed.split('.')[1]}.x.0.z) should be upgraded to version #{page.fixed}
+      (fixed train, CJP Operations Center and CJP Client Master (#{major_fixed}.#{minor_fixed}.x.0.z) should be upgraded to version #{fixed}
     %li
       %strong
         CloudBees Jenkins Team
-      should be upgraded to version #{page.rolling}
+      should be upgraded to version #{rolling}
     - if page.core&.weekly&.fixed || page.core&.lts&.fixed
       - if page.core&.weekly&.fixed
         %li
