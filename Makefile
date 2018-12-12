@@ -136,6 +136,25 @@ $(OUTPUT_DIR) node_modules vendor/gems content/_tmp:
 clean:
 	git clean -Xfd
 
+# Ensure the securities are copied and also transformed based on the
+# rolling and fixed versions which are env variables
+files := $(wildcard content/security/advisory/*.adoc)
+prepare-cloudbees:
+	echo ${rolling} ${fixed}
+	mkdir -p content/cloudbees
+	for p in $(files); \
+	    do \
+	    cp -rf $$p content/cloudbees/ ;\
+			echo "rolling: ${rolling}" >> content/cloudbees/$$(basename $$p) ; \
+			echo "fixed: ${fixed}" >> content/cloudbees/$$(basename $$p) ; \
+	    done
+
+cloudbees: site
+	mkdir -p $(BUILD_DIR)/target
+	(cd $(BUILD_DIR) && \
+		rm -rf target && \
+		find . -name cloudbees -exec cp -rf {} target/ \; )
+
 #######################################################
 
 .PHONY: all archive assets clean depends \
