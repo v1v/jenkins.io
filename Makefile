@@ -10,6 +10,13 @@ BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 USER_SITE_URL=https://$(GITHUB_USER).github.io/jenkins.io/$(BRANCH)/
 AWESTRUCT_USER_SITE=-P user-site --url "$(USER_SITE_URL)"
 
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
+  # Does require brew install gnu-sed
+  sed_command := gsed
+else
+  sed_command := sed
+endif
 
 # Generate everything
 all: fetch-reset prepare generate archive
@@ -143,11 +150,12 @@ prepare-advisory:
 	echo ${rolling} ${fixed}
 	mkdir -p content/advisory
 	for p in $(files); \
-	    do \
-	    cp -rf $$p content/advisory/ ;\
-			echo "rolling: ${rolling}" >> content/advisory/$$(basename $$p) ; \
-			echo "fixed: ${fixed}" >> content/advisory/$$(basename $$p) ; \
-	    done
+	do \
+		location="content/advisory/$$(basename $$p)" ;\
+		cp -rf $$p content/advisory/ ;\
+		eval "${sed_command} -n -i \"p;1a rolling: $${rolling}\" $${location}" ; \
+		eval "${sed_command} -n -i \"p;2a fixed: $${fixed}\" $${location}" ; \
+	done
 
 # Remove security to be able to apply the new theme
 remove-security:
