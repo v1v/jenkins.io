@@ -154,7 +154,9 @@ prepare-advisory:
 		location="content/advisory/$$(basename $$p)" ;\
 		cp -rf $$p content/advisory/ ;\
 		eval "${sed_command} -n -i \"p;1a rolling: $${rolling}\" $${location}" ; \
-		eval "${sed_command} -n -i \"p;2a fixed: $${fixed}\" $${location}" ; \
+		if [ ! -z "$${fixed}" ]; then \
+			eval "${sed_command} -n -i \"p;2a fixed: $${fixed}\" $${location}" ; \
+		fi \
 	done
 
 # Remove security to be able to apply the new theme
