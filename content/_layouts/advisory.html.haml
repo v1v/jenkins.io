@@ -25,12 +25,23 @@ notitle: true
   fixed_plugins = plugins.dup.keep_if { |p| p.fixed }
   unfixed_plugins = plugins.dup.keep_if { |p| !p.fixed }
 
+  # Helps to either use CJT or CJD
+  isCJD = false
   if page.rolling&.empty?
     rolling = ""
     major_rolling = "2"
   else
-    major_rolling = page.rolling.split(".")[0]
     rolling = page.rolling
+    major_rolling = page.rolling.split(".")[0]
+    minor_rolling = page.rolling.split(".")[1]
+    cb_rolling = page.rolling.split(".")[2]
+    # First release for CJD started from 2.150.3.2
+    if major_rolling.to_i >= 2 && minor_rolling.to_i >= 150
+      isCJD = true
+      if minor_rolling.to_i == 150 && cb_rolling.to_i <= 2
+        isCJD = false
+      end
+    end
   end
 
   if page.fixed.nil? || page.fixed.empty?
@@ -119,7 +130,10 @@ notitle: true
         (fixed train, CJP Operations Center and CJP Client Master (#{major_fixed_2}.#{minor_fixed_2}.x.0.z) should be upgraded to version #{fixed_2}
     %li
       %strong
-        CloudBees Jenkins Team
+        - if isCJD
+          CloudBees Jenkins Distribution
+        - else
+          CloudBees Jenkins Team
       should be upgraded to version #{rolling}
     - if page.core&.weekly&.fixed || page.core&.lts&.fixed
       - if page.core&.weekly&.fixed
