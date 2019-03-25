@@ -58,111 +58,109 @@ notitle: true
     end
   end
 
-%h1
+%h1<
   = page.title.gsub('Jenkins', 'CloudBees')
 
-%p
+%p<
   This advisory announces vulnerabilities in
-  %strong
-    Jenkins, CloudBees Jenkins Platform
-  and
-  %strong
-    CloudBees Jenkins Solutions.
-
+  %strong>
+    Jenkins, CloudBees Jenkins Distribution, CloudBees Jenkins Platform and CloudBees Core.
 
 - described_issues = page.issues.dup.keep_if { |i| i.title && i.description }
 - if described_issues.size > 0
   - described_issues.each do | issue |
-    %h3{:id => issue.id}
+    %h3{:id => issue.id}<
       = issue.title
-    %strong
-      = issue.id
+    %strong<
       - if issue.cve
-        \/
-        = issue.cve
+        = "#{issue.id} / #{issue.cve}"
+      - else
+        = issue.id
     = Asciidoctor.convert issue.description, safe: :safe
 - else
   - # If there is any content, it's the issue descriptions -- but only show if there are none in the data
   = content
+  %p
 
-%h2
+%p
+%h4<
   Severity
 
 %ul
   - page.issues.dup.sort { |x,y| x.id.split("-")[1].to_i <=> y.id.split("-")[1].to_i }.each do | issue |
-    %li
+    %li<
       = "#{issue.id}:"
       - if issue.cvss.vector.start_with? "CVSS:3.0"
-        %a{ :href => 'http://www.first.org/cvss/calculator/3.0#' + issue.cvss.vector }
+        %a{ :href => 'http://www.first.org/cvss/calculator/3.0#' + issue.cvss.vector }<
           = issue.cvss.severity
       - else
         = issue.cvss.severity
-
-%h2
+%p
+%h4<
   Fix
 - if fixed_plugins.length > 0 || page.core&.weekly&.fixed || page.core&.lts&.fixed
   %ul
-    %li
-      %strong
+    %li<
+      %strong<
         CloudBees Traditional Platforms
-      should be upgraded #{rolling}
-    %li
-      %strong
+      &nbsp;should be upgraded #{rolling}
+    %li<
+      %strong<
         CloudBees Cloud Platforms
-      should be upgraded #{rolling}
-    %li
-      %strong
+      &nbsp;should be upgraded #{rolling}
+    %li<
+      %strong<
         CloudBees Jenkins Enterprise
-      should be upgraded the Managed Masters and Operations Center to #{rolling}
-    %li
-      %strong
+      &nbsp;should be upgraded the Managed Masters and Operations Center to #{rolling}
+    %li<
+      %strong<
         CloudBees Jenkins Platform
-      (rolling train, CJP Operations Center and CJP Client Master (#{major_rolling}.x.y.z) should be upgraded to version #{rolling}
+      &nbsp;(rolling train, CJP Operations Center and CJP Client Master (#{major_rolling}.x.y.z) should be upgraded to version #{rolling}
     - if fixed_1
-      %li
-        %strong
+      %li<
+        %strong<
           CloudBees Jenkins Platform
-        (fixed train, CJP Operations Center and CJP Client Master (#{major_fixed_1}.#{minor_fixed_1}.x.0.z) should be upgraded to version #{fixed_1}
+        &nbsp;(fixed train, CJP Operations Center and CJP Client Master (#{major_fixed_1}.#{minor_fixed_1}.x.0.z) should be upgraded to version #{fixed_1}
     - if fixed_2
-      %li
-        %strong
+      %li<
+        %strong<
           CloudBees Jenkins Platform
-        (fixed train, CJP Operations Center and CJP Client Master (#{major_fixed_2}.#{minor_fixed_2}.x.0.z) should be upgraded to version #{fixed_2}
-    %li
-      %strong
+        &nbsp;(fixed train, CJP Operations Center and CJP Client Master (#{major_fixed_2}.#{minor_fixed_2}.x.0.z) should be upgraded to version #{fixed_2}
+    %li<
+      %strong<
         - if isCJD
           CloudBees Jenkins Distribution
         - else
           CloudBees Jenkins Team
-      should be upgraded to version #{rolling}
+      &nbsp;should be upgraded to version #{rolling}
     - if page.core&.weekly&.fixed || page.core&.lts&.fixed
       - if page.core&.weekly&.fixed
-        %li
-          %strong
+        %li<
+          %strong<
             Jenkins weekly
-          should be updated to version #{page.core.weekly&.fixed}
+          &nbsp;should be updated to version #{page.core.weekly&.fixed}
       - if page.core&.lts&.fixed
-        %li
-          %strong
+        %li<
+          %strong<
             Jenkins LTS
-          should be updated to version #{page.core.lts&.fixed}
+          &nbsp;should be updated to version #{page.core.lts&.fixed}
 
 - if unfixed_plugins.length > 0
-  %p
+  %p<
     As of publication of this advisory, no fixes are available for the following plugins:
   %ul
     - unfixed_plugins.each do | plugin |
-      %li
+      %li<
         = site._generated[:update_center].plugins[plugin.name]&.title || plugin.title || plugin.name
         Plugin
 
 
 - if page.resources && page.resources.length > 0
-  %h2
+  %h4<
     Other Resources
 
   %ul
     - page.resources.each do | resource |
-      %li
-        %a{:href => resource.url}
+      %li<
+        %a{:href => resource.url}<
           = resource.title
