@@ -72,9 +72,6 @@ notitle: true
     %h3{:id => issue.id}<
       = issue.title
     %strong<
-      - if issue.cve
-        = "#{issue.id} / #{issue.cve}"
-      - else
         = issue.id
     = Asciidoctor.convert issue.description, safe: :safe
 - else
